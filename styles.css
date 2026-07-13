@@ -1,0 +1,1119 @@
+:root {
+  --ink: #1f1f1f;
+  --paper: #efe4bf;
+  --paper-dark: #d4c591;
+  --panel: #2e5f66;
+  --panel-deep: #20494e;
+  --alert: #f46a4e;
+  --mint: #98f59b;
+  --chip: #5e331b;
+  --shadow-hard: 7px 7px 0 #1f1f1f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Chakra Petch", sans-serif;
+  color: var(--paper);
+  background: radial-gradient(circle at 18% 12%, #f46a4e22 0 15%, transparent 17%),
+    radial-gradient(circle at 82% 22%, #f2cd7322 0 14%, transparent 16%),
+    repeating-linear-gradient(
+      -35deg,
+      #143337,
+      #143337 18px,
+      #15393e 18px,
+      #15393e 36px
+    );
+}
+
+.background-shapes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 999px;
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  animation: drift 9s ease-in-out infinite;
+}
+
+.blob-a {
+  width: 220px;
+  height: 110px;
+  top: 10%;
+  left: 3%;
+  transform: rotate(-15deg);
+  background: #f4bd4e;
+}
+
+.blob-b {
+  width: 170px;
+  height: 160px;
+  right: 7%;
+  top: 64%;
+  transform: rotate(14deg);
+  background: #59b7c0;
+  animation-delay: 1.4s;
+}
+
+.blob-c {
+  width: 290px;
+  height: 90px;
+  left: 33%;
+  bottom: -24px;
+  transform: rotate(7deg);
+  background: #f46a4e;
+  animation-delay: 0.6s;
+}
+
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 16px 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.countdown-panel {
+  text-align: center;
+  margin-bottom: 18px;
+  padding: 18px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f1dfae, #deca97);
+  color: var(--ink);
+  box-shadow: var(--shadow-hard);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: "Bungee", cursive;
+  font-size: clamp(0.72rem, 2vw, 0.94rem);
+  letter-spacing: 0.04em;
+  color: #69411c;
+}
+
+.countdown-value {
+  margin: 10px 0 0;
+  font-family: "Bungee", cursive;
+  font-size: clamp(1.4rem, 4.6vw, 2.9rem);
+  line-height: 1.15;
+  text-shadow: 2px 2px 0 #f9f3dc;
+  animation: blinkLift 3.5s step-end infinite;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr 325px;
+  gap: 16px;
+  align-items: start;
+}
+
+.left-column {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.card {
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow-hard);
+}
+
+.cookie-section {
+  padding: 22px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--panel), var(--panel-deep));
+}
+
+.cookie-section h2,
+.upgrades-section h2 {
+  margin: 0 0 14px;
+  font-family: "Bungee", cursive;
+  letter-spacing: 0.03em;
+  font-size: clamp(1rem, 2.8vw, 1.45rem);
+}
+
+.cookie-button {
+  width: 280px;
+  height: 280px;
+  max-width: 75vw;
+  max-height: 75vw;
+  margin: 6px auto 12px;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  position: relative;
+  background: url("Images/GamingGuyMaidNoBG.png") center / contain no-repeat;
+  box-shadow: none;
+  transform: scale(1);
+  transition: transform 0.09s ease, filter 0.2s ease;
+}
+
+.cookie-button:hover {
+  filter: drop-shadow(0 8px 0 #1f1f1f) saturate(1.08);
+}
+
+.cookie-button:active {
+  transform: translateY(4px) scale(0.97);
+  filter: drop-shadow(0 3px 0 #1f1f1f);
+}
+
+.chip {
+  display: none;
+}
+
+.chip-a {
+  width: 30px;
+  height: 30px;
+  top: 25%;
+  left: 24%;
+}
+
+.chip-b {
+  width: 23px;
+  height: 23px;
+  top: 58%;
+  left: 25%;
+}
+
+.chip-c {
+  width: 28px;
+  height: 28px;
+  top: 36%;
+  left: 57%;
+}
+
+.chip-d {
+  width: 18px;
+  height: 18px;
+  top: 69%;
+  left: 58%;
+}
+
+.chip-e {
+  width: 16px;
+  height: 16px;
+  top: 46%;
+  left: 42%;
+}
+
+.score-line {
+  margin: 5px 0;
+  font-size: 1.03rem;
+  letter-spacing: 0.02em;
+}
+
+.score-line strong {
+  color: var(--mint);
+  text-shadow: 0 0 8px #88ff9266;
+}
+
+.danger-btn {
+  margin-top: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f98f76, var(--alert));
+  color: #231410;
+  font-family: "Bungee", cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  padding: 10px 14px;
+  box-shadow: 3px 3px 0 #1f1f1f;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.danger-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 4px 5px 0 #1f1f1f;
+}
+
+.danger-btn:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 #1f1f1f;
+}
+
+.ads-toggle-row {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: #1d3f44;
+}
+
+.ads-toggle-label {
+  font-family: "Bungee", cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: #f9df96;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  border: 2px solid #1f1f1f;
+  border-radius: 999px;
+  background: #7e8f93;
+  box-shadow: inset 0 -2px 0 #5f6d70;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #1f1f1f;
+  border-radius: 50%;
+  background: #f2e8c3;
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #8be28f;
+  box-shadow: inset 0 -2px 0 #6ac06f;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-switch input:focus-visible + .toggle-slider {
+  outline: 2px solid #ffd966;
+  outline-offset: 2px;
+}
+
+.rebirth-line {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #f9df96;
+  font-weight: 700;
+}
+
+.rebirth-btn {
+  margin-top: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffe38f, #f0b64d);
+  color: #2a1a0f;
+  font-family: "Bungee", cursive;
+  font-size: 0.84rem;
+  letter-spacing: 0.03em;
+  padding: 10px 14px;
+  box-shadow: 3px 3px 0 #1f1f1f;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
+}
+
+.rebirth-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 4px 5px 0 #1f1f1f;
+}
+
+.rebirth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wordle-section {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #3c5163, #2c3f4f);
+}
+
+.wordle-help {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  color: #dce7ef;
+}
+
+.wordle-stats {
+  margin: 0 0 10px;
+  font-size: 0.84rem;
+  color: #e8f0f7;
+}
+
+.wordle-stats strong {
+  color: #f9df96;
+}
+
+.wordle-board {
+  display: grid;
+  gap: 6px;
+  margin: 0 auto 14px;
+  width: min(320px, 100%);
+}
+
+.wordle-keyboard {
+  display: grid;
+  gap: 6px;
+  width: min(340px, 100%);
+  margin: 0 auto 12px;
+}
+
+.wordle-keyboard-row {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.wordle-key {
+  border: 2px solid #1f1f1f;
+  border-radius: 7px;
+  background: #d8d4c8;
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.wordle-key.correct {
+  background: #95e36e;
+  color: #173212;
+}
+
+.wordle-key.present {
+  background: #f2cd63;
+  color: #473409;
+}
+
+.wordle-key.absent {
+  background: #8e96a1;
+  color: #17202a;
+}
+
+.wordle-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.wordle-tile {
+  aspect-ratio: 1 / 1;
+  border: 2px solid #1e2930;
+  border-radius: 8px;
+  background: #efe4bf;
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: clamp(0.9rem, 3vw, 1.15rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.wordle-tile.correct {
+  background: #95e36e;
+  color: #173212;
+}
+
+.wordle-tile.present {
+  background: #f2cd63;
+  color: #473409;
+}
+
+.wordle-tile.absent {
+  background: #8e96a1;
+  color: #17202a;
+}
+
+.wordle-form {
+  display: flex;
+  gap: 8px;
+  width: min(320px, 100%);
+  margin: 0 auto;
+}
+
+.wordle-form input {
+  flex: 1;
+  min-width: 0;
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 0.95rem;
+  text-transform: lowercase;
+}
+
+.wordle-form button {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f1dfae, #dbc283);
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.wordle-form button:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.wordle-message {
+  min-height: 1.5em;
+  margin: 10px 0 6px;
+  color: #cce5ff;
+  font-weight: 700;
+}
+
+.coinflip-section {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #5b3f60, #3f2f47);
+}
+
+.coinflip-section h2 {
+  margin: 0 0 8px;
+  font-family: "Bungee", cursive;
+  letter-spacing: 0.03em;
+  font-size: clamp(1rem, 2.8vw, 1.45rem);
+}
+
+.coinflip-help {
+  margin: 0 0 12px;
+  color: #eadcf5;
+  font-size: 0.9rem;
+}
+
+.coin-visual {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  background: url("Images/coin.svg") center / contain no-repeat;
+  filter: drop-shadow(0 4px 0 #1f1f1f66);
+  transform-style: preserve-3d;
+}
+
+.coin-visual span {
+  font-family: "Bungee", cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: #5f3f11;
+  text-shadow: 0 1px 0 #ffefb0;
+}
+
+.coin-visual.waiting span {
+  color: #6a5d39;
+}
+
+.coin-visual.heads span,
+.coin-visual.tails span {
+  font-size: 0.62rem;
+}
+
+.coin-visual.tails {
+  filter: drop-shadow(0 4px 0 #1f1f1f66) hue-rotate(160deg) saturate(0.75);
+}
+
+.coin-visual.flip {
+  animation: coinFlip 0.62s ease;
+}
+
+.coinflip-controls {
+  display: grid;
+  gap: 9px;
+  width: min(340px, 100%);
+  margin: 0 auto;
+}
+
+#coinBetInput {
+  width: 100%;
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 0.95rem;
+}
+
+.coinflip-guess {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.coinflip-guess-btn,
+.coinflip-flip-btn {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.coinflip-guess-btn {
+  background: linear-gradient(180deg, #d4e6ff, #a9c3eb);
+  font-size: 0.76rem;
+  padding: 9px 10px;
+}
+
+.coinflip-guess-btn.active {
+  background: linear-gradient(180deg, #ffe3a3, #f1be66);
+}
+
+.coinflip-flip-btn {
+  background: linear-gradient(180deg, #9ff19a, #72c96f);
+  font-size: 0.84rem;
+  padding: 10px 12px;
+  box-shadow: 3px 3px 0 #1f1f1f;
+}
+
+.coinflip-flip-btn:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0 #1f1f1f;
+}
+
+.coinflip-face {
+  margin: 12px 0 6px;
+  font-family: "Bungee", cursive;
+  color: #f9df96;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.coinflip-result {
+  min-height: 1.5em;
+  margin: 0;
+  color: #d6f8d4;
+  font-weight: 700;
+}
+
+.upgrades-section {
+  padding: 18px;
+  background: linear-gradient(180deg, #344c7a, #2a3a5f);
+}
+
+.side-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.side-tab {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #d4e6ff, #a9c3eb);
+  color: #15233e;
+  font-family: "Bungee", cursive;
+  font-size: 0.74rem;
+  padding: 9px 6px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #1f1f1f;
+}
+
+.side-tab.active {
+  background: linear-gradient(180deg, #ffe3a3, #f1be66);
+}
+
+.side-panel h2 {
+  margin: 0 0 12px;
+  font-family: "Bungee", cursive;
+  letter-spacing: 0.03em;
+  font-size: clamp(1rem, 2.8vw, 1.45rem);
+}
+
+.achievements-summary {
+  margin: 0 0 10px;
+  color: #dce7ef;
+  font-weight: 700;
+}
+
+.achievements-progress {
+  width: 100%;
+  height: 14px;
+  border: 2px solid #1f1f1f;
+  border-radius: 999px;
+  background: #8392a8;
+  overflow: hidden;
+  box-shadow: inset 0 -2px 0 #6f7e95;
+  margin-bottom: 6px;
+}
+
+.achievements-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #9ff19a, #ffe58c);
+  transition: width 0.25s ease;
+}
+
+.achievements-progress-text {
+  margin: 0 0 10px;
+  color: #f9df96;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.achievements-list {
+  display: grid;
+  gap: 8px;
+}
+
+.achievement-item {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #efe4bf, #dcc891);
+  color: #1f1f1f;
+  padding: 8px 10px;
+}
+
+.achievement-item.locked {
+  background: linear-gradient(160deg, #b7bdc8, #9fa6b2);
+  opacity: 0.78;
+}
+
+.achievement-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.achievement-desc {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.achievement-progress {
+  width: 100%;
+  height: 10px;
+  border: 2px solid #1f1f1f;
+  border-radius: 999px;
+  background: #a3adbc;
+  overflow: hidden;
+  margin-top: 7px;
+}
+
+.achievement-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #8af38f, #f6d378);
+}
+
+.achievement-progress-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #263147;
+}
+
+.upgrade-list {
+  display: grid;
+  gap: 10px;
+}
+
+.upgrade-card {
+  display: grid;
+  gap: 7px;
+}
+
+.upgrade-btn {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(44px, 56px) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: linear-gradient(160deg, #efe4bf, #dcc891);
+  color: #1f1f1f;
+  padding: 10px 11px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1f1f1f;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
+}
+
+.upgrade-btn:nth-child(odd) {
+  transform: rotate(-0.8deg);
+}
+
+.upgrade-btn:nth-child(even) {
+  transform: rotate(0.8deg);
+}
+
+.upgrade-btn:hover:not(:disabled) {
+  transform: translateY(-2px) rotate(0deg);
+  box-shadow: 4px 6px 0 #1f1f1f;
+}
+
+.upgrade-btn:disabled {
+  opacity: 0.56;
+  box-shadow: 2px 2px 0 #1f1f1f;
+  cursor: not-allowed;
+}
+
+.upgrade-power-btn {
+  width: 100%;
+  border: 2px solid #1f1f1f;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffe3a3, #f1be66);
+  color: #2b1c11;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 7px 8px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #1f1f1f;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+}
+
+.upgrade-power-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 3px 3px 0 #1f1f1f;
+}
+
+.upgrade-power-btn:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+}
+
+.upgrade-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.96rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.upgrade-avatar {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #1f1f1f;
+  background: #d8ceb0;
+}
+
+.upgrade-text {
+  min-width: 0;
+}
+
+.upgrade-meta {
+  display: block;
+  margin-top: 5px;
+  color: #34426a;
+  font-size: 0.79rem;
+  line-height: 1.25;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(17, 14, 13, 0.72);
+  z-index: 20;
+}
+
+.hidden {
+  display: none;
+}
+
+.confirm-card {
+  width: min(440px, 100%);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f3e1b1, #dbc283);
+  color: #241a12;
+  box-shadow: var(--shadow-hard);
+  padding: 18px;
+  text-align: center;
+}
+
+.confirm-card h3 {
+  margin: 0 0 6px;
+  font-family: "Bungee", cursive;
+  font-size: 1.2rem;
+}
+
+.confirm-card p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.confirm-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: "Chakra Petch", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1f1f1f;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.modal-btn:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0 #1f1f1f;
+}
+
+.cancel-btn {
+  background: #d4e6ff;
+  color: #1a2741;
+}
+
+.confirm-btn {
+  background: linear-gradient(180deg, #f98f76, var(--alert));
+  color: #2a1410;
+}
+
+.birthday-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(8, 14, 23, 0.64);
+  z-index: 30;
+  overflow: hidden;
+}
+
+.birthday-card {
+  width: min(520px, 100%);
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffe3a3, #f4b15c);
+  color: #23150e;
+  box-shadow: var(--shadow-hard);
+  text-align: center;
+  padding: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.birthday-card h3 {
+  margin: 0 0 8px;
+  font-family: "Bungee", cursive;
+  font-size: clamp(1.1rem, 3.4vw, 1.8rem);
+  line-height: 1.25;
+}
+
+.birthday-card p {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(7, 14, 24, 0.72);
+  z-index: 32;
+}
+
+.ad-card {
+  width: min(560px, 100%);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f3e1b1, #dbc283);
+  color: #241a12;
+  box-shadow: var(--shadow-hard);
+  padding: 18px;
+  text-align: center;
+}
+
+.ad-card h3 {
+  margin: 0 0 6px;
+  font-family: "Bungee", cursive;
+  font-size: 1.2rem;
+}
+
+.ad-card p {
+  margin: 0 0 12px;
+  font-size: 0.98rem;
+}
+
+.ad-player-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.ad-video {
+  width: 100%;
+  max-height: 320px;
+  border: 3px solid #1f1f1f;
+  border-radius: 12px;
+  background: #000;
+}
+
+.ad-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #314463;
+}
+
+.confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -14px;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0.95;
+  animation-name: confettiFall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.confirm-overlay.hidden,
+.birthday-overlay.hidden,
+.ad-overlay.hidden {
+  display: none;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes blinkLift {
+  0%,
+  92%,
+  100% {
+    transform: translateY(0);
+  }
+  94% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120vh) rotate(540deg);
+    opacity: 1;
+  }
+}
+
+@keyframes coinFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(540deg) scale(1.04);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell {
+    padding-top: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wordle-form {
+    flex-direction: column;
+  }
+
+  .wordle-form button {
+    width: 100%;
+  }
+
+  .coinflip-guess {
+    grid-template-columns: 1fr;
+  }
+
+  .upgrade-btn {
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px 9px;
+  }
+
+  .upgrade-avatar {
+    width: 46px;
+    height: 46px;
+  }
+
+  .upgrade-name {
+    font-size: 0.88rem;
+  }
+
+  .upgrade-meta {
+    font-size: 0.73rem;
+  }
+}

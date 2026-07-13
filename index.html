@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GamingGuy907 Countdown Cookie Clicker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Chakra+Petch:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-shapes" aria-hidden="true">
+      <span class="blob blob-a"></span>
+      <span class="blob blob-b"></span>
+      <span class="blob blob-c"></span>
+    </div>
+
+    <main class="app-shell">
+      <header class="countdown-panel">
+        <p class="eyebrow">Countdown To GamingGuy's 19th Birthday (September 6, 2026)</p>
+        <h1 id="countdown" class="countdown-value">Loading...</h1>
+      </header>
+
+      <section class="game-layout">
+        <div class="left-column">
+          <div class="cookie-section card">
+            <h2>GamingGuy907 Clicker</h2>
+            <button id="cookieButton" class="cookie-button" aria-label="Click cookie">
+              <span class="chip chip-a"></span>
+              <span class="chip chip-b"></span>
+              <span class="chip chip-c"></span>
+              <span class="chip chip-d"></span>
+              <span class="chip chip-e"></span>
+            </button>
+            <p class="score-line">Crashouts: <strong id="score">0</strong></p>
+            <p class="score-line"> Crashouts Per second: <strong id="cps">0</strong></p>
+            <p id="rebirthInfo" class="rebirth-line">Ragequits: 0 | Multiplier: x1 | Next: 1,000,000,000</p>
+            <button id="rebirthButton" class="rebirth-btn" type="button">Ragequit</button>
+            <button id="resetButton" class="danger-btn" type="button">Reset Progress</button>
+            <div class="ads-toggle-row">
+              <span class="ads-toggle-label">Allow Random Ads</span>
+              <label class="toggle-switch" for="adsToggle">
+                <input id="adsToggle" type="checkbox" checked />
+                <span class="toggle-slider" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+
+          <section class="wordle-section card" aria-label="Wordle Puzzle">
+            <h2>Wordle Puzzle</h2>
+            <p class="wordle-help">Guess the random 5-letter word in 6 tries.</p>
+            <p class="wordle-stats">
+              Wins: <strong id="wordleWinsValue">0</strong>
+              | Streak: <strong id="wordleStreakValue">0</strong>
+              | Output Boost: <strong id="wordleBoostValue">x1.00</strong>
+            </p>
+            <div id="wordleBoard" class="wordle-board"></div>
+            <div id="wordleKeyboard" class="wordle-keyboard" aria-label="Wordle keyboard"></div>
+            <form id="wordleForm" class="wordle-form" autocomplete="off">
+              <input
+                id="wordleInput"
+                type="text"
+                inputmode="text"
+                maxlength="5"
+                minlength="5"
+                placeholder="Enter 5 letters"
+                aria-label="Enter a 5 letter word"
+                required
+              />
+              <button id="wordleGuessButton" type="submit">Guess</button>
+            </form>
+            <p id="wordleMessage" class="wordle-message"></p>
+            <button id="newWordleButton" class="danger-btn hidden" type="button">New Word</button>
+          </section>
+
+          <section class="coinflip-section card" aria-label="Coin Flip">
+            <h2>Coin Flip</h2>
+            <p class="coinflip-help">Bet crashouts, call heads or tails, and flip for 2x payout on a correct call.</p>
+            <div id="coinVisual" class="coin-visual waiting" aria-live="polite" aria-label="Coin result visual">
+              <span id="coinVisualText">?</span>
+            </div>
+            <div class="coinflip-controls">
+              <input
+                id="coinBetInput"
+                type="number"
+                min="1"
+                step="1"
+                value="100"
+                inputmode="numeric"
+                aria-label="Crashouts to bet"
+              />
+              <div class="coinflip-guess" role="group" aria-label="Choose heads or tails">
+                <button id="coinGuessHeads" class="coinflip-guess-btn active" type="button" aria-pressed="true">Heads</button>
+                <button id="coinGuessTails" class="coinflip-guess-btn" type="button" aria-pressed="false">Tails</button>
+              </div>
+              <button id="coinFlipButton" class="coinflip-flip-btn" type="button">Flip Coin</button>
+            </div>
+            <p id="coinFace" class="coinflip-face">Waiting...</p>
+            <p id="coinResult" class="coinflip-result"></p>
+          </section>
+        </div>
+
+        <aside class="upgrades-section card">
+          <div class="side-tabs" role="tablist" aria-label="Sidebar tabs">
+            <button id="showUpgradesTab" class="side-tab active" type="button" role="tab" aria-selected="true">Upgrades</button>
+            <button id="showAchievementsTab" class="side-tab" type="button" role="tab" aria-selected="false">Achievements</button>
+          </div>
+
+          <section id="upgradesPanel" class="side-panel" role="tabpanel">
+            <h2>LNC Upgrades</h2>
+            <div id="upgradesList" class="upgrade-list"></div>
+          </section>
+
+          <section id="achievementsPanel" class="side-panel hidden" role="tabpanel">
+            <h2>Achievements</h2>
+            <p id="achievementsSummary" class="achievements-summary">0/0 unlocked</p>
+            <div class="achievements-progress" aria-label="Achievements progress">
+              <div id="achievementsProgressFill" class="achievements-progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            </div>
+            <p id="achievementsProgressText" class="achievements-progress-text">0%</p>
+            <div id="achievementsList" class="achievements-list"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <div id="confirmOverlay" class="confirm-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="confirm-card">
+        <h3 id="confirmTitle">Are you sure?</h3>
+        <p>This will reset all cookies and upgrades. This cannot be undone.</p>
+        <div class="confirm-actions">
+          <button id="cancelResetButton" class="modal-btn cancel-btn" type="button">Cancel</button>
+          <button id="confirmResetButton" class="modal-btn confirm-btn" type="button">Yes, reset everything</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="birthdayOverlay" class="birthday-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="birthdayTitle">
+      <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+      <div class="birthday-card">
+        <h3 id="birthdayTitle">Happy Birthday GamingGuy907!!!</h3>
+        <p>This is gayer than 2 dudes fucking.</p>
+        <button id="closeBirthdayButton" class="modal-btn confirm-btn" type="button">Let&apos;s go!</button>
+      </div>
+    </div>
+
+    <div id="adOverlay" class="ad-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="adTitle">
+      <div class="ad-card">
+        <h3 id="adTitle">Watch An Ad?</h3>
+        <p id="adMessage">Watch a Fortnite2 Speedrun ad for a 2x production boost for 10 seconds.</p>
+        <div id="adPromptActions" class="confirm-actions">
+          <button id="adNoButton" class="modal-btn cancel-btn" type="button">No thanks</button>
+          <button id="adYesButton" class="modal-btn confirm-btn" type="button">Yes, show ad</button>
+        </div>
+        <div id="adPlayerWrap" class="ad-player-wrap hidden">
+          <video id="adVideo" class="ad-video" preload="auto" controls playsinline></video>
+          <p class="ad-note">Watch the full video to claim 2x production.</p>
+          <button id="adCloseButton" class="modal-btn confirm-btn hidden" type="button">Claimed</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
