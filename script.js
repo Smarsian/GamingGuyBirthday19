@@ -80,6 +80,11 @@ let wordleLosses = 0;
 let wordleCurrentStreak = 0;
 let wordleBestStreak = 0;
 let wordleBestGuessCount = null;
+let coinFlipPlays = 0;
+let coinFlipWins = 0;
+let coinFlipCurrentStreak = 0;
+let coinFlipBestStreak = 0;
+let coinFlipHighestWager = 0;
 const unlockedAchievements = new Set();
 const permanentAchievements = new Set();
 let adBoostActiveUntil = 0;
@@ -361,6 +366,11 @@ const ACHIEVEMENTS = [
   { id: "wordle-play-10", title: "Daily Grinder", description: "Finish 10 Wordle games." },
   { id: "wordle-play-50", title: "Word Addict", description: "Finish 50 Wordle games." },
   { id: "wordle-play-100", title: "Dictionary Dweller", description: "Finish 100 Wordle games." },
+  { id: "coinflip-play-1", title: "Coin Rookie", description: "Play Coin Flip once." },
+  { id: "coinflip-play-25", title: "Coin Grinder", description: "Play Coin Flip 25 times." },
+  { id: "coinflip-win-1", title: "Lucky Call", description: "Win one Coin Flip." },
+  { id: "coinflip-streak-3", title: "High Roller", description: "Win 3 Coin Flips in a row." },
+  { id: "coinflip-wager-10000", title: "Let's Go Gambling!", description: "Place a 10,000 crashout Coin Flip wager." },
 ];
 
 let wordleTarget = "";
@@ -477,6 +487,11 @@ function saveProgress() {
     wordleCurrentStreak,
     wordleBestStreak,
     wordleBestGuessCount,
+    coinFlipPlays,
+    coinFlipWins,
+    coinFlipCurrentStreak,
+    coinFlipBestStreak,
+    coinFlipHighestWager,
     unlockedAchievements: Array.from(unlockedAchievements),
     upgrades: upgrades.map((upgrade) => ({
       id: upgrade.id,
@@ -569,6 +584,26 @@ function loadProgress() {
       Number.isFinite(save.wordleBestGuessCount)
     ) {
       wordleBestGuessCount = Math.max(1, Math.floor(save.wordleBestGuessCount));
+    }
+
+    if (typeof save.coinFlipPlays === "number" && Number.isFinite(save.coinFlipPlays)) {
+      coinFlipPlays = Math.max(0, Math.floor(save.coinFlipPlays));
+    }
+
+    if (typeof save.coinFlipWins === "number" && Number.isFinite(save.coinFlipWins)) {
+      coinFlipWins = Math.max(0, Math.floor(save.coinFlipWins));
+    }
+
+    if (typeof save.coinFlipCurrentStreak === "number" && Number.isFinite(save.coinFlipCurrentStreak)) {
+      coinFlipCurrentStreak = Math.max(0, Math.floor(save.coinFlipCurrentStreak));
+    }
+
+    if (typeof save.coinFlipBestStreak === "number" && Number.isFinite(save.coinFlipBestStreak)) {
+      coinFlipBestStreak = Math.max(0, Math.floor(save.coinFlipBestStreak));
+    }
+
+    if (typeof save.coinFlipHighestWager === "number" && Number.isFinite(save.coinFlipHighestWager)) {
+      coinFlipHighestWager = Math.max(0, Math.floor(save.coinFlipHighestWager));
     }
 
     if (Array.isArray(save.unlockedAchievements)) {
@@ -754,6 +789,9 @@ function handleCoinFlip() {
     return;
   }
 
+  coinFlipPlays += 1;
+  coinFlipHighestWager = Math.max(coinFlipHighestWager, wager);
+
   score -= wager;
 
   const flip = Math.random() < 0.5 ? "heads" : "tails";
@@ -764,8 +802,12 @@ function handleCoinFlip() {
     const payout = wager * 2;
     score += payout;
     totalCrashoutsEarned += payout;
+    coinFlipWins += 1;
+    coinFlipCurrentStreak += 1;
+    coinFlipBestStreak = Math.max(coinFlipBestStreak, coinFlipCurrentStreak);
     coinResult.textContent = `You called it! +${formatNumber(payout)} crashouts.`;
   } else {
+    coinFlipCurrentStreak = 0;
     coinResult.textContent = `Wrong call. You lost ${formatNumber(wager)} crashouts.`;
   }
 
@@ -847,6 +889,11 @@ function resetProgress() {
 
   totalCrashoutsEarned = 0;
   totalCookieClicks = 0;
+  coinFlipPlays = 0;
+  coinFlipWins = 0;
+  coinFlipCurrentStreak = 0;
+  coinFlipBestStreak = 0;
+  coinFlipHighestWager = 0;
   resetWordleProgress();
   unlockedAchievements.clear();
   resetUpgradeProgress();
@@ -1241,6 +1288,16 @@ function getAchievementProgress(achievementId) {
       return { current: wordleGamesPlayed, target: 50 };
     case "wordle-play-100":
       return { current: wordleGamesPlayed, target: 100 };
+    case "coinflip-play-1":
+      return { current: coinFlipPlays, target: 1 };
+    case "coinflip-play-25":
+      return { current: coinFlipPlays, target: 25 };
+    case "coinflip-win-1":
+      return { current: coinFlipWins, target: 1 };
+    case "coinflip-streak-3":
+      return { current: coinFlipBestStreak, target: 3 };
+    case "coinflip-wager-10000":
+      return { current: coinFlipHighestWager, target: 10000 };
     default:
       return { current: 0, target: 1 };
   }
@@ -1361,6 +1418,11 @@ function evaluateAchievements() {
     "wordle-play-10": wordleGamesPlayed >= 10,
     "wordle-play-50": wordleGamesPlayed >= 50,
     "wordle-play-100": wordleGamesPlayed >= 100,
+    "coinflip-play-1": coinFlipPlays >= 1,
+    "coinflip-play-25": coinFlipPlays >= 25,
+    "coinflip-win-1": coinFlipWins >= 1,
+    "coinflip-streak-3": coinFlipBestStreak >= 3,
+    "coinflip-wager-10000": coinFlipHighestWager >= 10000,
   };
 
   ACHIEVEMENTS.forEach((achievement) => {
