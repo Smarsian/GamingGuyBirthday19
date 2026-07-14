@@ -59,14 +59,7 @@ const AD_AUTOCLICK_DURATION_MS = 30_000;
 const AD_AUTOCLICK_INTERVAL_MS = 100;
 const AD_PROMPT_CHECK_MS = 45_000;
 const AD_PROMPT_COOLDOWN_MS = 90_000;
-const AD_MEDIA_SOURCES = [
-  {
-    video: "Sounds/Fortnite2Sequal.mp4",
-  },
-  {
-    video: "Sounds/Fortnite2.mp4",
-  },
-];
+const AD_VIDEO_SOURCES = ["Sounds/Fortnite2Sequal.mp4", "Sounds/Fortnite2.mp4"];
 
 const targetDate = new Date("2026-09-06T00:00:00");
 
@@ -832,8 +825,8 @@ function getAdProductionMultiplier() {
   return Date.now() < adBoostActiveUntil ? AD_PRODUCTION_MULTIPLIER : 1;
 }
 
-function pickRandomAdMedia() {
-  return AD_MEDIA_SOURCES[Math.floor(Math.random() * AD_MEDIA_SOURCES.length)];
+function pickRandomAdVideo() {
+  return AD_VIDEO_SOURCES[Math.floor(Math.random() * AD_VIDEO_SOURCES.length)];
 }
 
 function openAdPrompt() {
@@ -857,14 +850,14 @@ function closeAdPrompt() {
 }
 
 function startAdWatch() {
-  const media = pickRandomAdMedia();
+  const videoSource = pickRandomAdVideo();
   adVideo.pause();
   adVideo.currentTime = 0;
   adVideo.muted = false;
   adVideo.defaultMuted = false;
   adVideo.volume = 1;
   adVideo.controls = true;
-  adVideo.src = media.video;
+  adVideo.src = videoSource;
   adVideo.load();
 
   adPromptActions.classList.add("hidden");
