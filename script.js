@@ -62,11 +62,9 @@ const AD_PROMPT_COOLDOWN_MS = 90_000;
 const AD_MEDIA_SOURCES = [
   {
     video: "Sounds/Fortnite2Sequal.mp4",
-    audio: "Sounds/Fortnite2 Speedrun (again) - Normal - 0_53_470_320k.mp3",
   },
   {
     video: "Sounds/Fortnite2.mp4",
-    audio: "Sounds/Fortnite2 Speedrun - Normal - 1_15.360_320k.mp3",
   },
 ];
 
@@ -94,8 +92,6 @@ let adAutoClickerActiveUntil = 0;
 let adAutoClickerTimeoutId = null;
 let adAutoClickerIntervalId = null;
 let adsEnabled = true;
-const adAudio = new Audio();
-let currentAdMedia = null;
 let selectedCoinGuess = "heads";
 let clickAudioContext = null;
 
@@ -840,27 +836,6 @@ function pickRandomAdMedia() {
   return AD_MEDIA_SOURCES[Math.floor(Math.random() * AD_MEDIA_SOURCES.length)];
 }
 
-function stopAdAudio(resetSource = false) {
-  adAudio.pause();
-  adAudio.currentTime = 0;
-
-  if (resetSource) {
-    adAudio.removeAttribute("src");
-    adAudio.load();
-  }
-}
-
-function syncAdAudioToVideo() {
-  if (!adAudio.src || adVideo.readyState < 1) {
-    return;
-  }
-
-  const drift = Math.abs(adAudio.currentTime - adVideo.currentTime);
-  if (drift > 0.35) {
-    adAudio.currentTime = adVideo.currentTime;
-  }
-}
-
 function openAdPrompt() {
   if (!adOverlay.classList.contains("hidden")) {
     return;
@@ -878,43 +853,26 @@ function closeAdPrompt() {
   adVideo.pause();
   adVideo.removeAttribute("src");
   adVideo.load();
-  stopAdAudio(true);
-  currentAdMedia = null;
   adOverlay.classList.add("hidden");
 }
 
 function startAdWatch() {
   const media = pickRandomAdMedia();
-  currentAdMedia = media;
-
-  stopAdAudio(true);
   adVideo.pause();
   adVideo.currentTime = 0;
-  adVideo.muted = true;
-  adVideo.defaultMuted = true;
+  adVideo.muted = false;
+  adVideo.defaultMuted = false;
   adVideo.volume = 1;
   adVideo.controls = true;
   adVideo.src = media.video;
   adVideo.load();
-
-  adAudio.src = media.audio;
-  adAudio.currentTime = 0;
-  adAudio.volume = 1;
-  adAudio.load();
 
   adPromptActions.classList.add("hidden");
   adPlayerWrap.classList.remove("hidden");
   adCloseButton.classList.add("hidden");
   adMessage.textContent = "Watch the full ad to claim a random bonus reward.";
 
-  adVideo.play().then(() => {
-    adAudio.currentTime = adVideo.currentTime;
-    adAudio.play().catch(() => {
-      adVideo.muted = false;
-      adVideo.defaultMuted = false;
-      adMessage.textContent = "Press play to start the ad. If muted, unmute in video controls.";
-    });
-  }).catch(() => {
+  adVideo.play().catch(() => {
     adMessage.textContent = "Press play and make sure the video is unmuted to start watching the ad.";
     adVideo.controls = true;
   });
@@ -1694,31 +1652,7 @@ if (adsToggle) {
   });
 }
 
-adVideo.addEventListener("play", () => {
-  if (!currentAdMedia || !adAudio.src) {
-    return;
-  }
-
-  syncAdAudioToVideo();
-  adAudio.play().catch(() => {
-    // Ignore autoplay restrictions; user can press play again.
-  });
-});
-
-adVideo.addEventListener("pause", () => {
-  adAudio.pause();
-});
-
-adVideo.addEventListener("seeking", () => {
-  syncAdAudioToVideo();
-});
-
-adVideo.addEventListener("timeupdate", () => {
-  syncAdAudioToVideo();
-});
-
 adVideo.addEventListener("ended", () => {
-  stopAdAudio();
   adMessage.textContent = applyRandomAdReward();
   adCloseButton.classList.remove("hidden");
 });
