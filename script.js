@@ -26,6 +26,10 @@ const wordleKeyboard = document.getElementById("wordleKeyboard");
 const wordleForm = document.getElementById("wordleForm");
 const wordleInput = document.getElementById("wordleInput");
 const wordleGuessButton = document.getElementById("wordleGuessButton");
+const wordlePrefireInput = document.getElementById("wordlePrefireInput");
+const saveWordlePrefireButton = document.getElementById("saveWordlePrefireButton");
+const wordlePrefireStatus = document.getElementById("wordlePrefireStatus");
+const wordlePrefireButtons = document.getElementById("wordlePrefireButtons");
 const wordleMessage = document.getElementById("wordleMessage");
 const newWordleButton = document.getElementById("newWordleButton");
 const wordleWinsValue = document.getElementById("wordleWinsValue");
@@ -85,6 +89,8 @@ let coinFlipWins = 0;
 let coinFlipCurrentStreak = 0;
 let coinFlipBestStreak = 0;
 let coinFlipHighestWager = 0;
+let coinFlipTotalWagered = 0;
+let coinFlipBiggestWin = 0;
 const unlockedAchievements = new Set();
 const permanentAchievements = new Set();
 let adBoostActiveUntil = 0;
@@ -94,6 +100,7 @@ let adAutoClickerActiveUntil = 0;
 let adAutoClickerTimeoutId = null;
 let adAutoClickerIntervalId = null;
 let adsEnabled = true;
+let wordlePrefireWords = [];
 let selectedCoinGuess = "heads";
 let clickAudioContext = null;
 let selectedUpgradeBuyMode = "1";
@@ -297,6 +304,88 @@ const WORDLE_WORD_LENGTH = 5;
 const WORDLE_MAX_GUESSES = 6;
 const WORDLE_KEYBOARD_ROWS = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
 
+function normalizeWordlePrefireWords(rawText) {
+  if (typeof rawText !== "string") {
+    return [];
+  }
+
+  const uniqueWords = [];
+  const seen = new Set();
+  const candidates = rawText.split(/[\n,]+/);
+
+  candidates.forEach((entry) => {
+    const word = entry.trim().toLowerCase();
+    if (!/^[a-z]{5}$/.test(word) || seen.has(word)) {
+      return;
+    }
+
+    seen.add(word);
+    uniqueWords.push(word);
+  });
+
+  return uniqueWords.slice(0, 16);
+}
+
+function renderWordlePrefireWords() {
+  if (!wordlePrefireButtons || !wordlePrefireStatus) {
+    return;
+  }
+
+  wordlePrefireButtons.innerHTML = "";
+
+  if (wordlePrefireWords.length === 0) {
+    wordlePrefireStatus.textContent = "No prefire words saved.";
+    return;
+  }
+
+  wordlePrefireStatus.textContent = `Saved ${wordlePrefireWords.length} prefire word${
+    wordlePrefireWords.length === 1 ? "" : "s"
+  }.`;
+
+  wordlePrefireWords.forEach((word) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "wordle-prefire-btn";
+    button.textContent = word.toUpperCase();
+    button.addEventListener("click", () => {
+      if (!wordleInput || wordleInput.disabled) {
+        return;
+      }
+
+      wordleInput.value = word;
+      wordleInput.focus();
+    });
+    wordlePrefireButtons.appendChild(button);
+  });
+}
+
+function saveWordlePrefireSetting() {
+  if (!wordlePrefireInput || !wordlePrefireStatus) {
+    return;
+  }
+
+  const raw = wordlePrefireInput.value;
+  const parsed = normalizeWordlePrefireWords(raw);
+  wordlePrefireWords = parsed;
+  wordlePrefireInput.value = wordlePrefireWords.join(", ");
+
+  const hadInput = raw.trim().length > 0;
+  if (hadInput && wordlePrefireWords.length === 0) {
+    wordlePrefireStatus.textContent = "No valid words saved. Use 5-letter words only.";
+  }
+
+  renderWordlePrefireWords();
+  saveSettings();
+}
+
+function applyWordlePrefireSettingState() {
+  if (wordlePrefireInput) {
+    wordlePrefireInput.value = wordlePrefireWords.join(", ");
+  }
+
+  renderWordlePrefireWords();
+}
+
 const ACHIEVEMENTS = [
   { id: "first-click", title: "First Crashout", description: "Click GamingGuy once." },
   { id: "click-1000", title: "Click Machine", description: "Click GamingGuy 1,000 times." },
@@ -368,9 +457,19 @@ const ACHIEVEMENTS = [
   { id: "wordle-play-100", title: "Dictionary Dweller", description: "Finish 100 Wordle games." },
   { id: "coinflip-play-1", title: "Coin Rookie", description: "Play Coin Flip once." },
   { id: "coinflip-play-25", title: "Coin Grinder", description: "Play Coin Flip 25 times." },
+  { id: "coinflip-play-100", title: "Coin Marathon", description: "Play Coin Flip 100 times." },
   { id: "coinflip-win-1", title: "Lucky Call", description: "Win one Coin Flip." },
+  { id: "coinflip-win-25", title: "Loaded Dice", description: "Win 25 Coin Flips." },
+  { id: "coinflip-loss-10", title: "Tough Luck", description: "Lose 10 Coin Flips." },
   { id: "coinflip-streak-3", title: "High Roller", description: "Win 3 Coin Flips in a row." },
+  { id: "coinflip-streak-5", title: "On A Heater", description: "Win 5 Coin Flips in a row." },
   { id: "coinflip-wager-10000", title: "Let's Go Gambling!", description: "Place a 10,000 crashout Coin Flip wager." },
+  {
+    id: "coinflip-total-wager-100000",
+    title: "Coin Volume Trader",
+    description: "Wager 100,000 total crashouts in Coin Flip.",
+  },
+  { id: "coinflip-big-win-50000", title: "Jackpot Caller", description: "Win 50,000 crashouts from one flip." },
 ];
 
 let wordleTarget = "";
@@ -492,6 +591,8 @@ function saveProgress() {
     coinFlipCurrentStreak,
     coinFlipBestStreak,
     coinFlipHighestWager,
+    coinFlipTotalWagered,
+    coinFlipBiggestWin,
     unlockedAchievements: Array.from(unlockedAchievements),
     upgrades: upgrades.map((upgrade) => ({
       id: upgrade.id,
@@ -606,6 +707,14 @@ function loadProgress() {
       coinFlipHighestWager = Math.max(0, Math.floor(save.coinFlipHighestWager));
     }
 
+    if (typeof save.coinFlipTotalWagered === "number" && Number.isFinite(save.coinFlipTotalWagered)) {
+      coinFlipTotalWagered = Math.max(0, Math.floor(save.coinFlipTotalWagered));
+    }
+
+    if (typeof save.coinFlipBiggestWin === "number" && Number.isFinite(save.coinFlipBiggestWin)) {
+      coinFlipBiggestWin = Math.max(0, Math.floor(save.coinFlipBiggestWin));
+    }
+
     if (Array.isArray(save.unlockedAchievements)) {
       save.unlockedAchievements.forEach((achievementId) => {
         if (typeof achievementId === "string") {
@@ -657,6 +766,7 @@ function saveSettings() {
     SETTINGS_KEY,
     JSON.stringify({
       adsEnabled,
+      wordlePrefireWords,
     })
   );
 }
@@ -671,6 +781,10 @@ function loadSettings() {
     const settings = JSON.parse(rawSettings);
     if (typeof settings.adsEnabled === "boolean") {
       adsEnabled = settings.adsEnabled;
+    }
+
+    if (Array.isArray(settings.wordlePrefireWords)) {
+      wordlePrefireWords = normalizeWordlePrefireWords(settings.wordlePrefireWords.join(","));
     }
   } catch {
     localStorage.removeItem(SETTINGS_KEY);
@@ -791,6 +905,7 @@ function handleCoinFlip() {
 
   coinFlipPlays += 1;
   coinFlipHighestWager = Math.max(coinFlipHighestWager, wager);
+  coinFlipTotalWagered += wager;
 
   score -= wager;
 
@@ -805,6 +920,7 @@ function handleCoinFlip() {
     coinFlipWins += 1;
     coinFlipCurrentStreak += 1;
     coinFlipBestStreak = Math.max(coinFlipBestStreak, coinFlipCurrentStreak);
+    coinFlipBiggestWin = Math.max(coinFlipBiggestWin, payout);
     coinResult.textContent = `You called it! +${formatNumber(payout)} crashouts.`;
   } else {
     coinFlipCurrentStreak = 0;
@@ -894,6 +1010,8 @@ function resetProgress() {
   coinFlipCurrentStreak = 0;
   coinFlipBestStreak = 0;
   coinFlipHighestWager = 0;
+  coinFlipTotalWagered = 0;
+  coinFlipBiggestWin = 0;
   resetWordleProgress();
   unlockedAchievements.clear();
   resetUpgradeProgress();
@@ -1184,6 +1302,7 @@ function setActiveSidebarTab(tabName) {
 
 function getAchievementProgress(achievementId) {
   const safeFloor = (value) => Math.max(0, Math.floor(value));
+  const coinFlipLosses = Math.max(0, coinFlipPlays - coinFlipWins);
   const totalOwnedUpgrades = getTotalOwnedUpgrades();
   const totalPowerLevels = getTotalPowerLevels();
   const upgradesOwnedAtLeastOne = upgrades.filter((upgrade) => upgrade.owned >= 1).length;
@@ -1292,12 +1411,24 @@ function getAchievementProgress(achievementId) {
       return { current: coinFlipPlays, target: 1 };
     case "coinflip-play-25":
       return { current: coinFlipPlays, target: 25 };
+    case "coinflip-play-100":
+      return { current: coinFlipPlays, target: 100 };
     case "coinflip-win-1":
       return { current: coinFlipWins, target: 1 };
+    case "coinflip-win-25":
+      return { current: coinFlipWins, target: 25 };
+    case "coinflip-loss-10":
+      return { current: coinFlipLosses, target: 10 };
     case "coinflip-streak-3":
       return { current: coinFlipBestStreak, target: 3 };
+    case "coinflip-streak-5":
+      return { current: coinFlipBestStreak, target: 5 };
     case "coinflip-wager-10000":
       return { current: coinFlipHighestWager, target: 10000 };
+    case "coinflip-total-wager-100000":
+      return { current: coinFlipTotalWagered, target: 100000 };
+    case "coinflip-big-win-50000":
+      return { current: coinFlipBiggestWin, target: 50000 };
     default:
       return { current: 0, target: 1 };
   }
@@ -1378,6 +1509,7 @@ function safeNumber(value) {
 
 function evaluateAchievements() {
   let changed = false;
+  const coinFlipLosses = Math.max(0, coinFlipPlays - coinFlipWins);
 
   const achievementChecks = {
     "first-click": totalCookieClicks >= 1,
@@ -1420,9 +1552,15 @@ function evaluateAchievements() {
     "wordle-play-100": wordleGamesPlayed >= 100,
     "coinflip-play-1": coinFlipPlays >= 1,
     "coinflip-play-25": coinFlipPlays >= 25,
+    "coinflip-play-100": coinFlipPlays >= 100,
     "coinflip-win-1": coinFlipWins >= 1,
+    "coinflip-win-25": coinFlipWins >= 25,
+    "coinflip-loss-10": coinFlipLosses >= 10,
     "coinflip-streak-3": coinFlipBestStreak >= 3,
+    "coinflip-streak-5": coinFlipBestStreak >= 5,
     "coinflip-wager-10000": coinFlipHighestWager >= 10000,
+    "coinflip-total-wager-100000": coinFlipTotalWagered >= 100000,
+    "coinflip-big-win-50000": coinFlipBiggestWin >= 50000,
   };
 
   ACHIEVEMENTS.forEach((achievement) => {
@@ -1656,8 +1794,10 @@ function updateDisplay() {
       purchaseLabel = `MAX(${plan.count})`;
     }
 
+    const displayCost = plan.count > 0 ? plan.totalCost : upgrade.cost;
+
     const meta = button.querySelector(".upgrade-meta");
-    meta.textContent = `Buy ${purchaseLabel} Cost: ${formatNumber(plan.totalCost)} | Unit: ${formatNumber(
+    meta.textContent = `Buy ${purchaseLabel} Cost: ${formatNumber(displayCost)} | Unit: ${formatNumber(
       getUpgradeUnitCps(upgrade)
     )}/s | Owned: ${upgrade.owned}`;
 
@@ -1852,6 +1992,23 @@ if (adsToggle) {
   });
 }
 
+if (saveWordlePrefireButton) {
+  saveWordlePrefireButton.addEventListener("click", () => {
+    saveWordlePrefireSetting();
+  });
+}
+
+if (wordlePrefireInput) {
+  wordlePrefireInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    event.preventDefault();
+    saveWordlePrefireSetting();
+  });
+}
+
 adVideo.addEventListener("ended", () => {
   adMessage.textContent = applyRandomAdReward();
   adCloseButton.classList.remove("hidden");
@@ -1894,6 +2051,7 @@ setActiveSidebarTab("upgrades");
 evaluateAchievements();
 startNewWordleGame();
 applyAdsToggleState();
+applyWordlePrefireSettingState();
 setCoinGuess("heads");
 updateCoinVisual(null);
 setUpgradeBuyMode("1");

@@ -486,6 +486,76 @@ body {
   cursor: not-allowed;
 }
 
+.wordle-prefire-settings {
+  width: min(320px, 100%);
+  margin: 10px auto 0;
+  text-align: left;
+}
+
+.wordle-prefire-settings label {
+  display: block;
+  margin-bottom: 6px;
+  color: #f9df96;
+  font-family: "Bungee", cursive;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+}
+
+.wordle-prefire-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+#wordlePrefireInput {
+  width: 100%;
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 0.9rem;
+  text-transform: lowercase;
+}
+
+#saveWordlePrefireButton {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #d4e6ff, #a9c3eb);
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.wordle-prefire-status {
+  min-height: 1.3em;
+  margin: 7px 0 0;
+  color: #cce5ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.wordle-prefire-buttons {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wordle-prefire-btn {
+  border: 2px solid #1f1f1f;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe3a3, #f1be66);
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
 .wordle-message {
   min-height: 1.5em;
   margin: 10px 0 6px;
@@ -1152,6 +1222,14 @@ body {
   }
 
   .wordle-form button {
+    width: 100%;
+  }
+
+  .wordle-prefire-row {
+    grid-template-columns: 1fr;
+  }
+
+  #saveWordlePrefireButton {
     width: 100%;
   }
 

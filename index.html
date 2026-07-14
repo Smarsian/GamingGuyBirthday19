@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Bungee&family=Chakra+Petch:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260714a" />
+    <link rel="stylesheet" href="styles.css?v=20260714b" />
   </head>
   <body>
     <div class="background-shapes" aria-hidden="true">
@@ -73,6 +73,20 @@
               />
               <button id="wordleGuessButton" type="submit">Guess</button>
             </form>
+            <div class="wordle-prefire-settings" aria-label="Wordle prefire words setting">
+              <label for="wordlePrefireInput">Prefire Words</label>
+              <div class="wordle-prefire-row">
+                <input
+                  id="wordlePrefireInput"
+                  type="text"
+                  placeholder="crane, slate, audio"
+                  aria-label="Comma separated Wordle prefire words"
+                />
+                <button id="saveWordlePrefireButton" type="button">Save Prefires</button>
+              </div>
+              <p id="wordlePrefireStatus" class="wordle-prefire-status">No prefire words saved.</p>
+              <div id="wordlePrefireButtons" class="wordle-prefire-buttons"></div>
+            </div>
             <p id="wordleMessage" class="wordle-message"></p>
             <button id="newWordleButton" class="danger-btn hidden" type="button">New Word</button>
           </section>
@@ -172,6 +186,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=20260714a"></script>
+    <script src="script.js?v=20260714b"></script>
   </body>
 </html>
