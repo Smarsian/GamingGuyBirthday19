@@ -555,6 +555,12 @@ body {
   margin: 0 auto;
 }
 
+.coinflip-bet-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
 #coinBetInput {
   width: 100%;
   border: 2px solid #1f1f1f;
@@ -562,6 +568,18 @@ body {
   padding: 10px 11px;
   font-family: "Chakra Petch", sans-serif;
   font-size: 0.95rem;
+}
+
+.coinflip-allin-btn {
+  border: 2px solid #1f1f1f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f7cd7d, #e9a742);
+  color: #1f1f1f;
+  font-family: "Bungee", cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  padding: 9px 10px;
+  cursor: pointer;
 }
 
 .coinflip-guess {
@@ -650,6 +668,28 @@ body {
   font-family: "Bungee", cursive;
   letter-spacing: 0.03em;
   font-size: clamp(1rem, 2.8vw, 1.45rem);
+}
+
+.bulk-buy-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.bulk-buy-btn {
+  border: 2px solid #1f1f1f;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #d4e6ff, #a9c3eb);
+  color: #15233e;
+  font-family: "Bungee", cursive;
+  font-size: 0.68rem;
+  padding: 8px 4px;
+  cursor: pointer;
+}
+
+.bulk-buy-btn.active {
+  background: linear-gradient(180deg, #ffe3a3, #f1be66);
 }
 
 .achievements-summary {
@@ -1095,6 +1135,10 @@ body {
   }
 
   .coinflip-guess {
+    grid-template-columns: 1fr;
+  }
+
+  .coinflip-bet-row {
     grid-template-columns: 1fr;
   }
 

@@ -32,6 +32,7 @@ const wordleWinsValue = document.getElementById("wordleWinsValue");
 const wordleStreakValue = document.getElementById("wordleStreakValue");
 const wordleBoostValue = document.getElementById("wordleBoostValue");
 const coinBetInput = document.getElementById("coinBetInput");
+const coinAllInButton = document.getElementById("coinAllInButton");
 const coinGuessHeads = document.getElementById("coinGuessHeads");
 const coinGuessTails = document.getElementById("coinGuessTails");
 const coinFlipButton = document.getElementById("coinFlipButton");
@@ -41,6 +42,9 @@ const coinFace = document.getElementById("coinFace");
 const coinResult = document.getElementById("coinResult");
 const showUpgradesTab = document.getElementById("showUpgradesTab");
 const showAchievementsTab = document.getElementById("showAchievementsTab");
+const buyQty1 = document.getElementById("buyQty1");
+const buyQty10 = document.getElementById("buyQty10");
+const buyQtyMax = document.getElementById("buyQtyMax");
 const upgradesPanel = document.getElementById("upgradesPanel");
 const achievementsPanel = document.getElementById("achievementsPanel");
 const achievementsSummary = document.getElementById("achievementsSummary");
@@ -87,6 +91,7 @@ let adAutoClickerIntervalId = null;
 let adsEnabled = true;
 let selectedCoinGuess = "heads";
 let clickAudioContext = null;
+let selectedUpgradeBuyMode = "1";
 
 const WORDLE_WORDS = [
   "about", "abuse", "actor", "acute", "admit", "adopt", "adult", "after", "again", "agent",
@@ -304,10 +309,36 @@ const ACHIEVEMENTS = [
   { id: "owned-100", title: "Army Builder", description: "Own 100 total upgrades." },
   { id: "all-upgrades", title: "Full Squad", description: "Own at least one of each upgrade." },
   { id: "owned-67-each", title: "67", description: "Own at least 67 of every upgrade." },
+  { id: "owned-100-each", title: "Centurion", description: "Own at least 100 of every upgrade." },
   { id: "rebirth-1", title: "Ragequit", description: "Perform your first ragequit." },
   { id: "rebirth-3", title: "AUGGGGGHHHH", description: "Reach 3 ragequits." },
   { id: "rebirth-5", title: "Reborn Again", description: "Reach 5 ragequits." },
   { id: "rebirth-10", title: "Infinite Tilt", description: "Reach 10 ragequits." },
+  {
+    id: "rebirth-only-gamingguy907",
+    title: "One Trick: Fortnite 2 Edition",
+    description: "Ragequit after buying only GamingGuy907 upgrades.",
+  },
+  {
+    id: "rebirth-only-kodex13",
+    title: "One Trick: Penetration Edition",
+    description: "Ragequit after buying only Kodex13 upgrades.",
+  },
+  {
+    id: "rebirth-only-smarsian",
+    title: "One Trick: Empty Tree Edition",
+    description: "Ragequit after buying only Smarsian upgrades.",
+  },
+  {
+    id: "rebirth-only-alextk473",
+    title: "One Trick: Jerry Edition",
+    description: "Ragequit after buying only AlexTK473 upgrades.",
+  },
+  {
+    id: "rebirth-only-juztkillz",
+    title: "One Trick: Spinning Edition",
+    description: "Ragequit after buying only JuztKillz upgrades.",
+  },
   {
     id: "reset-once",
     title: "Fresh Start",
@@ -742,6 +773,47 @@ function handleCoinFlip() {
   saveProgress();
 }
 
+function getBulkPlanForMode(upgrade, mode) {
+  const requestedCount = mode === "max" ? Number.MAX_SAFE_INTEGER : Number(mode);
+  let count = 0;
+  let totalCost = 0;
+  let simulatedOwned = upgrade.owned;
+  let simulatedCost = upgrade.cost;
+
+  while (count < requestedCount && score >= totalCost + simulatedCost) {
+    totalCost += simulatedCost;
+    count += 1;
+    simulatedOwned += 1;
+    simulatedCost = Math.floor(upgrade.baseCost * Math.pow(1.15, simulatedOwned));
+  }
+
+  return {
+    count,
+    totalCost,
+    nextCost: simulatedCost,
+  };
+}
+
+function setUpgradeBuyMode(mode) {
+  selectedUpgradeBuyMode = mode;
+
+  if (buyQty1 && buyQty10 && buyQtyMax) {
+    const isOne = mode === "1";
+    const isTen = mode === "10";
+    const isMax = mode === "max";
+
+    buyQty1.classList.toggle("active", isOne);
+    buyQty10.classList.toggle("active", isTen);
+    buyQtyMax.classList.toggle("active", isMax);
+
+    buyQty1.setAttribute("aria-pressed", String(isOne));
+    buyQty10.setAttribute("aria-pressed", String(isTen));
+    buyQtyMax.setAttribute("aria-pressed", String(isMax));
+  }
+
+  updateDisplay();
+}
+
 function resetWordleProgress() {
   wordleGamesPlayed = 0;
   wordleWins = 0;
@@ -957,6 +1029,25 @@ function tryRebirth() {
   rebirthCount += 1;
   rebirthCost = calculateRebirthCost(rebirthCount);
 
+  const oneUpgradeRagequitAchievementByIndex = [
+    "rebirth-only-gamingguy907",
+    "rebirth-only-kodex13",
+    "rebirth-only-smarsian",
+    "rebirth-only-alextk473",
+    "rebirth-only-juztkillz",
+  ];
+  const boughtUpgradeIndexes = upgrades
+    .map((upgrade, index) => (upgrade.owned > 0 ? index : -1))
+    .filter((index) => index >= 0);
+
+  if (boughtUpgradeIndexes.length === 1) {
+    const unlockId = oneUpgradeRagequitAchievementByIndex[boughtUpgradeIndexes[0]];
+    if (unlockId && !unlockedAchievements.has(unlockId)) {
+      unlockedAchievements.add(unlockId);
+      renderAchievements();
+    }
+  }
+
   upgrades.forEach((upgrade) => {
     upgrade.owned = 0;
     upgrade.cost = upgrade.baseCost;
@@ -1050,6 +1141,12 @@ function getAchievementProgress(achievementId) {
   const totalPowerLevels = getTotalPowerLevels();
   const upgradesOwnedAtLeastOne = upgrades.filter((upgrade) => upgrade.owned >= 1).length;
   const upgradesOwnedAtLeast67 = upgrades.filter((upgrade) => upgrade.owned >= 67).length;
+  const upgradesOwnedAtLeast100 = upgrades.filter((upgrade) => upgrade.owned >= 100).length;
+  const singlePurchasedUpgradeIndexes = upgrades
+    .map((upgrade, index) => (upgrade.owned > 0 ? index : -1))
+    .filter((index) => index >= 0);
+  const singlePurchasedUpgradeIndex =
+    singlePurchasedUpgradeIndexes.length === 1 ? singlePurchasedUpgradeIndexes[0] : -1;
 
   switch (achievementId) {
     case "first-click":
@@ -1084,6 +1181,8 @@ function getAchievementProgress(achievementId) {
       return { current: upgradesOwnedAtLeastOne, target: upgrades.length };
     case "owned-67-each":
       return { current: upgradesOwnedAtLeast67, target: upgrades.length };
+    case "owned-100-each":
+      return { current: upgradesOwnedAtLeast100, target: upgrades.length };
     case "rebirth-1":
       return { current: rebirthCount, target: 1 };
     case "rebirth-3":
@@ -1092,6 +1191,16 @@ function getAchievementProgress(achievementId) {
       return { current: rebirthCount, target: 5 };
     case "rebirth-10":
       return { current: rebirthCount, target: 10 };
+    case "rebirth-only-gamingguy907":
+      return { current: singlePurchasedUpgradeIndex === 0 ? 1 : 0, target: 1 };
+    case "rebirth-only-kodex13":
+      return { current: singlePurchasedUpgradeIndex === 1 ? 1 : 0, target: 1 };
+    case "rebirth-only-smarsian":
+      return { current: singlePurchasedUpgradeIndex === 2 ? 1 : 0, target: 1 };
+    case "rebirth-only-alextk473":
+      return { current: singlePurchasedUpgradeIndex === 3 ? 1 : 0, target: 1 };
+    case "rebirth-only-juztkillz":
+      return { current: singlePurchasedUpgradeIndex === 4 ? 1 : 0, target: 1 };
     case "reset-once":
       return { current: permanentAchievements.has("reset-once") ? 1 : 0, target: 1 };
     case "power-5":
@@ -1230,6 +1339,7 @@ function evaluateAchievements() {
     "owned-100": getTotalOwnedUpgrades() >= 100,
     "all-upgrades": upgrades.every((upgrade) => upgrade.owned >= 1),
     "owned-67-each": upgrades.every((upgrade) => upgrade.owned >= 67),
+    "owned-100-each": upgrades.every((upgrade) => upgrade.owned >= 100),
     "rebirth-1": rebirthCount >= 1,
     "rebirth-3": rebirthCount >= 3,
     "rebirth-5": rebirthCount >= 5,
@@ -1474,10 +1584,18 @@ function updateDisplay() {
   upgradeButtons.forEach((button) => {
     const index = Number(button.dataset.index);
     const upgrade = upgrades[index];
-    button.disabled = score < upgrade.cost;
+    const plan = getBulkPlanForMode(upgrade, selectedUpgradeBuyMode);
+    const minRequiredCount = selectedUpgradeBuyMode === "max" ? 1 : Number(selectedUpgradeBuyMode);
+    const canBuy = plan.count >= minRequiredCount;
+    button.disabled = !canBuy;
+
+    let purchaseLabel = selectedUpgradeBuyMode;
+    if (selectedUpgradeBuyMode === "max") {
+      purchaseLabel = `MAX(${plan.count})`;
+    }
 
     const meta = button.querySelector(".upgrade-meta");
-    meta.textContent = `Cost: ${formatNumber(upgrade.cost)} | Unit: ${formatNumber(
+    meta.textContent = `Buy ${purchaseLabel} Cost: ${formatNumber(plan.totalCost)} | Unit: ${formatNumber(
       getUpgradeUnitCps(upgrade)
     )}/s | Owned: ${upgrade.owned}`;
 
@@ -1495,13 +1613,16 @@ function updateDisplay() {
 
 function buyUpgrade(index) {
   const upgrade = upgrades[index];
-  if (score < upgrade.cost) {
+  const plan = getBulkPlanForMode(upgrade, selectedUpgradeBuyMode);
+  const requestedCount = selectedUpgradeBuyMode === "max" ? plan.count : Number(selectedUpgradeBuyMode);
+
+  if (requestedCount <= 0 || plan.count < requestedCount) {
     return;
   }
 
-  score -= upgrade.cost;
-  upgrade.owned += 1;
-  upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned));
+  score -= plan.totalCost;
+  upgrade.owned += requestedCount;
+  upgrade.cost = plan.nextCost;
   pointsPerSecond = calculateBaseCps();
 
   updateDisplay();
@@ -1637,6 +1758,30 @@ if (coinFlipButton) {
   });
 }
 
+if (coinAllInButton) {
+  coinAllInButton.addEventListener("click", () => {
+    if (!coinBetInput) {
+      return;
+    }
+
+    coinBetInput.value = String(Math.floor(score));
+  });
+}
+
+if (buyQty1 && buyQty10 && buyQtyMax) {
+  buyQty1.addEventListener("click", () => {
+    setUpgradeBuyMode("1");
+  });
+
+  buyQty10.addEventListener("click", () => {
+    setUpgradeBuyMode("10");
+  });
+
+  buyQtyMax.addEventListener("click", () => {
+    setUpgradeBuyMode("max");
+  });
+}
+
 if (adsToggle) {
   adsToggle.addEventListener("change", () => {
     adsEnabled = adsToggle.checked;
@@ -1689,3 +1834,4 @@ startNewWordleGame();
 applyAdsToggleState();
 setCoinGuess("heads");
 updateCoinVisual(null);
+setUpgradeBuyMode("1");

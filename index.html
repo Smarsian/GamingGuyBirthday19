@@ -84,15 +84,18 @@
               <span id="coinVisualText">?</span>
             </div>
             <div class="coinflip-controls">
-              <input
-                id="coinBetInput"
-                type="number"
-                min="1"
-                step="1"
-                value="100"
-                inputmode="numeric"
-                aria-label="Crashouts to bet"
-              />
+              <div class="coinflip-bet-row">
+                <input
+                  id="coinBetInput"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="100"
+                  inputmode="numeric"
+                  aria-label="Crashouts to bet"
+                />
+                <button id="coinAllInButton" class="coinflip-allin-btn" type="button">All In</button>
+              </div>
               <div class="coinflip-guess" role="group" aria-label="Choose heads or tails">
                 <button id="coinGuessHeads" class="coinflip-guess-btn active" type="button" aria-pressed="true">Heads</button>
                 <button id="coinGuessTails" class="coinflip-guess-btn" type="button" aria-pressed="false">Tails</button>
@@ -112,6 +115,11 @@
 
           <section id="upgradesPanel" class="side-panel" role="tabpanel">
             <h2>LNC Upgrades</h2>
+            <div class="bulk-buy-controls" role="group" aria-label="Upgrade bulk buy amount">
+              <button id="buyQty1" class="bulk-buy-btn active" type="button" aria-pressed="true">Buy 1</button>
+              <button id="buyQty10" class="bulk-buy-btn" type="button" aria-pressed="false">Buy 10</button>
+              <button id="buyQtyMax" class="bulk-buy-btn" type="button" aria-pressed="false">Buy Max</button>
+            </div>
             <div id="upgradesList" class="upgrade-list"></div>
           </section>
 
