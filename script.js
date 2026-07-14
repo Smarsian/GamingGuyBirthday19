@@ -63,7 +63,7 @@ const AD_AUTOCLICK_DURATION_MS = 30_000;
 const AD_AUTOCLICK_INTERVAL_MS = 100;
 const AD_PROMPT_CHECK_MS = 45_000;
 const AD_PROMPT_COOLDOWN_MS = 90_000;
-const AD_VIDEO_SOURCES = ["Sounds/Fortnite2Sequal.mp4", "Sounds/Fortnite2.mp4"];
+const AD_VIDEO_SOURCES = ["Sounds/Fortnite2Sequel.mp4", "Sounds/Fortnite2.mp4"];
 
 const targetDate = new Date("2026-09-06T00:00:00");
 
